@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Przelicznik walut</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        main {
+            background-color: white;
+            padding: 30px 40px;
+            border-radius: 12px;
+            text-align: center;
+            width: 320px;
+        }
+
+        h1 {
+            margin-bottom: 25px;
+            font-size: 20px;
+            color: darkgrey;
+        }
+
+        input, select {
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid black;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        #amount {
+            width: 150px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            color: black;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            border: 1px solid black;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 18px;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>
+            Przelicz 
+            <select id="from">
+                <option value="PLN">PLN</option>
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+                <option value="GBP">GBP</option>
+            </select>
+            na
+            <select id="to">
+                <option value="PLN">PLN</option>
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+                <option value="GBP">GBP</option>
+            </select>
+        </h1>
+
+        <input type="number" id="amount" placeholder="Kwota" />
+        <button onclick="Konwertuj()">Przelicz</button>
+        <button onclick="ZamianaWalut()">Odwroc waluty</button>
+        <p id="result"></p>
+    </main>
+
+    <script>
+    function Konwertuj() {
+        const amount = document.getElementById("amount").value;
+        const from = document.getElementById("from").value;
+        const to = document.getElementById("to").value;
+
+if(amount <= 0 || isNaN(amount)) {
+    document.getElementById("result").innerText = "błędna kwota";
+    return;
+}
+        fetch(`http://localhost:5000/convert?amount=${amount}&from=${from}&to=${to}`)
+            .then(odp => odp.json())
+            .then(data => {document.getElementById("result").innerText = `${data.amount} ${data.from} = ${data.converted} ${data.to}`;
+            });
+    }
+    function ZamianaWalut() {
+    const from = document.getElementById("from");
+    const to = document.getElementById("to");
+    const temp = from.value;
+    from.value = to.value;
+    to.value = temp;
+}
+    </script>
+</body>
+</html>
